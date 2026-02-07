@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7"
+      crossorigin="anonymous"
+    />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container">
+      <h2 class="mb-4">Student Records</h2>
+
+      <div class="d-flex justify-content-between mb-3">
+        <input
+          type="text"
+          id="searchInput"
+          class="form-control w-50"
+          placeholder="Search by name"
+        />
+        <div>
+          <button
+            class="btn btn-success me-2"
+            data-bs-toggle="modal"
+            data-bs-target="#addStudentModal"
+          >
+            Add Student
+          </button>
+          <button class="btn btn-primary" onclick="AllStudents()">
+            Refresh
+          </button>
+          <button class="btn btn-danger" onclick="Logout()">
+            Logout
+          </button>
+        </div>
+      </div>
+
+      <table class="table table-bordered">
+        <thead class="table-dark">
+          <tr>
+            <th>Profile</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Age</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Gender</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="studentTableBody"></tbody>
+      </table>
+
+      <nav>
+        <ul class="pagination justify-content-center" id="pagination"></ul>
+      </nav>
+    </div>
+
+    <!-- View Student Modal -->
+    <div class="modal fade" id="viewStudentModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Student Details</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <img id="viewProfilePic" src="" class="rounded mb-3" width="100" />
+            <p><strong>First_Name:</strong> <span id="firstName"></span></p>
+            <p><strong>Last_Name:</strong> <span id="lastName"></span></p>
+            <p><strong>Email:</strong> <span id="viewEmail"></span></p>
+            <p><strong>Age:</strong> <span id="viewage"></span></p>
+            <p><strong>Phone:</strong> <span id="viewPhone"></span></p>
+            <p><strong>Gender:</strong> <span id="viewGender"></span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Student Modal -->
+    <div class="modal fade" id="addStudentModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form id="addStudentForm" enctype="multipart/form-data">
+            <div class="modal-header">
+              <h5 class="modal-title">Add New Student</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-2">
+                <input
+                  type="text"
+                  class="form-control"
+                  name="first_name"
+                  placeholder="First Name"
+                  required
+                />
+              </div>
+              <div class="mb-2">
+                <input
+                  type="text"
+                  class="form-control"
+                  name="last_name"
+                  placeholder="Last Name"
+                  required
+                />
+              </div>
+              <div class="mb-2">
+                <input
+                  type="email"
+                  class="form-control"
+                  name="email"
+                  placeholder="Email"
+                  required
+                />
+              </div>
+              <div class="mb-2">
+                <input
+                  type="text"
+                  class="form-control"
+                  name="phone"
+                  placeholder="Phone"
+                  required
+                />
+              </div>
+              <div class="mb-2">
+                <input
+                  type="text"
+                  class="form-control"
+                  name="age"
+                  placeholder="Age"
+                  required
+                />
+              </div>
+              <div class="mb-2">
+                <select class="form-select" name="gender" required>
+                  <option value="">Select Gender</option>
+                  <option>Male</option>
+                  <option>Female</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="mb-2">
+                <label>Upload Profile Picture:</label>
+                <input
+                  type="file"
+                  class="form-control"
+                  name="profile_pic"
+                  required
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-success" type="submit">
+                Create Student
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="modal fade" id="editStudentModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form id="editStudentForm" enctype="multipart/form-data">
+            <div class="modal-header">
+              <h5 class="modal-title">Edit Student</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" id="editStudentId" />
+              <div class="mb-2">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editFirstName"
+                  name="first_name"
+                  placeholder="First Name"
+                  required
+                />
+              </div>
+              <div class="mb-2">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editLastName"
+                  name="last_name"
+                  placeholder="Last Name"
+                  required
+                />
+              </div>
+              <div class="mb-2">
+                <input
+                  type="email"
+                  class="form-control"
+                  id="editEmail"
+                  name="email"
+                  placeholder="Email"
+                  required
+                />
+              </div>
+              <div class="mb-2">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editPhone"
+                  name="phone"
+                  placeholder="Phone"
+                  required
+                />
+              </div>
+              <div class="mb-2">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editage"
+                  name="age"
+                  placeholder="Age"
+                  required
+                />
+              </div>
+              <div class="mb-2">
+                <select
+                  class="form-select"
+                  id="editGender"
+                  name="gender"
+                  required
+                >
+                  <option value="">Select Gender</option>
+                  <option>Male</option>
+                  <option>Female</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="mb-2">
+                <label>Upload New Profile Picture:</label>
+                <input
+                  type="file"
+                  class="form-control"
+                  id="editProfilePic"
+                  name="profile_pic"
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-primary" type="submit">Update</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      let api = "http://localhost:8080/api";
+      const checkAuth=()=>{
+        const token=localStorage.getItem('token')
+        if(!token)
+      {
+         window.localStorage.href='index.html'
+      }
+      return token
+      }
+      const token=checkAuth()
+      //all students
+      const AllStudents = async (search='',page=1) => {
+     
+        const res = await fetch(`${api}/all?search=${encodeURIComponent(search)}`,{
+          headers:{'authorization':`Bearer ${token}`}
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+
+          let tbody = document.querySelector("#studentTableBody");
+
+          tbody.innerHTML = "";
+          data.result.forEach((element) => {
+            console.log(element.profile_pic)
+            tbody.innerHTML += `<tr>
+                <td>
+  <img src="http://localhost:8080/uploads/${element.profile_pic}"    width="50"
+    height="50"
+    style="object-fit: cover; border-radius: 50%; marginInline:auto">
+</td>
+
+                    <td>${element.first_name}</td>
+                    <td>${element.last_name}</td>
+                     <td>${element.age}</td>
+                    <td>${element.email}</td>
+                    <td>${element.phone}</td>
+                    <td>${element.gender}</td>
+                    <td>
+            <button class="btn btn-info btn-sm"   onclick="Getusers('${element._id}')")>View</button>
+            <button class="btn btn-warning btn-sm" onclick="editusers('${element._id}')" >Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteusers('${element._id}')" >Delete</button>
+          </td>
+                </tr>`;
+          });
+        }
+      };
+      // user profile
+      const Getusers = async (id) => {
+        const res = await fetch(`${api}/single/${id}`,{
+          headers:{'authorization':`Bearer ${token}`}
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+
+          document.querySelector("#viewProfilePic").src =
+            `http://localhost:8080/uploads/${data.finduser.profile_pic}`;
+          document.querySelector("#firstName").innerHTML =
+            data.finduser.first_name;
+          document.querySelector("#lastName").innerHTML =
+            data.finduser.last_name;
+          document.querySelector("#viewEmail").innerHTML = data.finduser.email;
+          document.querySelector("#viewage").innerHTML = data.finduser.age;
+          document.querySelector("#viewPhone").innerHTML = data.finduser.phone;
+          document.querySelector("#viewGender").innerHTML =
+            data.finduser.gender;
+        }
+        new bootstrap.Modal(document.querySelector("#viewStudentModal")).show();
+      };
+      // delete profile
+      
+      const deleteusers = async (id) => {
+        if (confirm("Are You Sure to Delete")) {
+          const res = await fetch(`${api}/delete/${id}`, {
+              headers:{'authorization':`Bearer ${token}`},
+            method: "DELETE",
+          });
+          if (res.ok) {
+            AllStudents();
+          }
+        } else {
+          alert("Some error is occured");
+        }
+      };
+      // edit the user
+      const editusers = async (id) => {
+        alert(id)
+      
+        const res = await fetch(`${api}/single/${id}`,{
+          headers:{'authorization':`Bearer ${token}`}
+        });
+        console.log(res)
+        // console.log(res)
+        if (res.ok) {
+          const data = await res.json();
+          document.querySelector('#editStudentId').value=data.finduser._id
+          document.querySelector("#editFirstName").value =
+            data.finduser.first_name;
+          document.querySelector("#editLastName").value =
+            data.finduser.last_name;
+          document.querySelector("#editEmail").value = data.finduser.email;
+          document.querySelector("#editPhone").value = data.finduser.phone;
+          document.querySelector("#editage").value = data.finduser.age;
+          document.querySelector("#editGender").value = data.finduser.gender;
+
+          new bootstrap.Modal(
+            document.querySelector("#editStudentModal"),
+          ).show();
+        } else {
+        }
+        document.querySelector('#editStudentForm').addEventListener('submit',async function (e) {
+            e.preventDefault()
+            const formData=new FormData(this)
+            const id=document.querySelector('#editStudentId').value
+            const updateProfile=await fetch(`${api}/updates/${id}`,{
+                headers:{'authorization':`Bearer ${token}`},
+              method:'PATCH',
+              body:formData
+            })
+            if(res.ok)
+            {
+              bootstrap.Modal.getInstance(document.querySelector("#editStudentModal")).hide()
+              AllStudents();
+            }
+            else
+            {
+              alert("Some error is occured")
+            }
+
+        })
+      };
+      // add students
+      document
+        .querySelector("#addStudentForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const formData = new FormData(this);
+         
+          const res = await fetch(`${api}/creates`, {
+              headers:{'authorization':`Bearer ${token}`},
+            method: "POST",
+            body: formData,
+          });
+          if (res.ok) {
+            bootstrap.Modal.getInstance(
+              document.querySelector("#addStudentModal"),
+            ).hide();
+            AllStudents();
+          } else {
+            alert(res.message);
+          }
+        });
+
+      AllStudents();
+      // search functionality
+      document.querySelector('#searchInput').addEventListener('input',()=>{
+        const query=document.querySelector('#searchInput').value
+        AllStudents(query)
+      })
+   const Logout=()=>{
+    localStorage.removeItem('token')
+    window.location.href='index.html'
+   }
+    </script>
+  </body>
+</html>
