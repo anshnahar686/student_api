@@ -26,6 +26,9 @@ app.use(auth.Authenticate)
 app.use("/api", routers)
 
 connections()
+app.get("/", (req, res) => {
+  res.send("Server working");
+});
 
 app.listen(process.env.PORT, () => {
   console.log("server is started on port", process.env.PORT)
