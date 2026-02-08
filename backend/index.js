@@ -9,7 +9,7 @@ const auth = require("./authentication/auth.js")
 
 const app = express()
 
-app.use(cors("*"))
+app.use(cors());
 app.use(express.json())
 
 // ✅ STATIC FILES (MUST be before auth)
