@@ -34,7 +34,7 @@ const uploads=multer({
 })
 exports.CreateUser = async (req, res) => {
     try {
-      
+       console.log("DSF")
         const { first_name, last_name, email, age, phone, gender} = req.body
         const profile_pic = req.file.filename; 
 
@@ -54,6 +54,7 @@ exports.CreateUser = async (req, res) => {
 exports.AllUser = async (req, res) => {
    try {
     // Ensure search is always a string
+    console.log("DSf")
     const search = req.query.search ? String(req.query.search) : "";
 
     const query = search
