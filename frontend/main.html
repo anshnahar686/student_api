@@ -273,7 +273,7 @@
       crossorigin="anonymous"
     ></script>
     <script>
-      let api = "https://student-api-1-81no.onrender.com/api";
+      let api = "https://student-api-25x8.onrender.com/api";
       const checkAuth=()=>{
         const token=localStorage.getItem('token')
         if(!token)
@@ -292,7 +292,7 @@
 
         if (res.ok) {
           const data = await res.json();
-
+          console.log()
           let tbody = document.querySelector("#studentTableBody");
 
           tbody.innerHTML = "";
