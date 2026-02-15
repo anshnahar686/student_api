@@ -12,51 +12,64 @@
     <title>Document</title>
   </head>
   <body>
-    <div class="container">
-      <h2 class="mb-4">Student Records</h2>
+    <div class="container-fluid px-3">
+      <h2 class="mb-4 text-center text-md-start">Student Records</h2>
 
-      <div class="d-flex justify-content-between mb-3">
+      <!-- Top Controls -->
+      <div 
+        class="d-flex flex-column flex-md-row justify-content-md-between align-items-md-center gap-2 mb-3"
+      >
+        <!-- Search -->
         <input
           type="text"
           id="searchInput"
-          class="form-control w-50"
+          class="form-control w-50 w-md-full"
           placeholder="Search by name"
         />
-        <div>
+
+        <!-- Buttons -->
+        <div class="d-flex flex-wrap gap-2 justify-content-md-end">
           <button
-            class="btn btn-success me-2"
+            class="btn btn-success"
             data-bs-toggle="modal"
             data-bs-target="#addStudentModal"
           >
             Add Student
           </button>
+
           <button class="btn btn-primary" onclick="AllStudents()">
             Refresh
           </button>
-          <button class="btn btn-danger" onclick="Logout()">
-            Logout
-          </button>
+
+          <button class="btn btn-danger" onclick="Logout()">Logout</button>
         </div>
       </div>
 
-      <table class="table table-bordered">
-        <thead class="table-dark">
-          <tr>
-            <th>Profile</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Age</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Gender</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="studentTableBody"></tbody>
-      </table>
+      <!-- Responsive Table Wrapper -->
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+          <thead class="table-dark text-center">
+            <tr>
+              <th>Profile</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Age</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Gender</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="studentTableBody"></tbody>
+        </table>
+      </div>
 
+      <!-- Pagination -->
       <nav>
-        <ul class="pagination justify-content-center" id="pagination"></ul>
+        <ul
+          class="pagination justify-content-center flex-wrap"
+          id="pagination"
+        ></ul>
       </nav>
     </div>
 
@@ -172,7 +185,6 @@
       </div>
     </div>
 
-    
     <div class="modal fade" id="editStudentModal" tabindex="-1">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -273,34 +285,36 @@
       crossorigin="anonymous"
     ></script>
     <script>
-      let api = "https://student-api-25x8.onrender.com/api";
-      const checkAuth=()=>{
-        const token=localStorage.getItem('token')
-        if(!token)
-      {
-         window.localStorage.href='index.html'
-      }
-      return token
-      }
-      const token=checkAuth()
+      let api = "https://student-database-eq65.onrender.com/api";
+      const checkAuth = () => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          window.localStorage.href = "index.html";
+        }
+        return token;
+      };
+      const token = checkAuth();
       //all students
-      const AllStudents = async (search='',page=1) => {
-     
-        const res = await fetch(`${api}/all?search=${encodeURIComponent(search)}`,{
-          headers:{'authorization':`Bearer ${token}`}
-        });
+      const AllStudents = async (search = "", page = 1) => {
+        const res = await fetch(
+          `${api}/all?search=${encodeURIComponent(search)}`,
+          {
+            headers: { authorization: `Bearer ${token}` },
+          },
+        );
 
         if (res.ok) {
           const data = await res.json();
-          console.log()
+          console.log();
           let tbody = document.querySelector("#studentTableBody");
 
           tbody.innerHTML = "";
           data.result.forEach((element) => {
-            console.log(element.profile_pic)
+            console.log(element.profile_pic);
             tbody.innerHTML += `<tr>
                 <td>
-  <img src="http://localhost:8080/uploads/${element.profile_pic}"    width="50"
+  <img src="https://student-api-2-c36a.onrender.com/uploads/${element.profile_pic}
+"    width="50"
     height="50"
     style="object-fit: cover; border-radius: 50%; marginInline:auto">
 </td>
@@ -322,15 +336,15 @@
       };
       // user profile
       const Getusers = async (id) => {
-        const res = await fetch(`${api}/single/${id}`,{
-          headers:{'authorization':`Bearer ${token}`}
+        const res = await fetch(`${api}/single/${id}`, {
+          headers: { authorization: `Bearer ${token}` },
         });
 
         if (res.ok) {
           const data = await res.json();
 
           document.querySelector("#viewProfilePic").src =
-            `http://localhost:8080/uploads/${data.finduser.profile_pic}`;
+            `https://student-api-2-c36a.onrender.com${data.finduser.profile_pic}`;
           document.querySelector("#firstName").innerHTML =
             data.finduser.first_name;
           document.querySelector("#lastName").innerHTML =
@@ -344,11 +358,11 @@
         new bootstrap.Modal(document.querySelector("#viewStudentModal")).show();
       };
       // delete profile
-      
+
       const deleteusers = async (id) => {
         if (confirm("Are You Sure to Delete")) {
           const res = await fetch(`${api}/delete/${id}`, {
-              headers:{'authorization':`Bearer ${token}`},
+            headers: { authorization: `Bearer ${token}` },
             method: "DELETE",
           });
           if (res.ok) {
@@ -360,16 +374,16 @@
       };
       // edit the user
       const editusers = async (id) => {
-        alert(id)
-      
-        const res = await fetch(`${api}/single/${id}`,{
-          headers:{'authorization':`Bearer ${token}`}
+        alert(id);
+
+        const res = await fetch(`${api}/single/${id}`, {
+          headers: { authorization: `Bearer ${token}` },
         });
-        console.log(res)
+        console.log(res);
         // console.log(res)
         if (res.ok) {
           const data = await res.json();
-          document.querySelector('#editStudentId').value=data.finduser._id
+          document.querySelector("#editStudentId").value = data.finduser._id;
           document.querySelector("#editFirstName").value =
             data.finduser.first_name;
           document.querySelector("#editLastName").value =
@@ -384,26 +398,26 @@
           ).show();
         } else {
         }
-        document.querySelector('#editStudentForm').addEventListener('submit',async function (e) {
-            e.preventDefault()
-            const formData=new FormData(this)
-            const id=document.querySelector('#editStudentId').value
-            const updateProfile=await fetch(`${api}/updates/${id}`,{
-                headers:{'authorization':`Bearer ${token}`},
-              method:'PATCH',
-              body:formData
-            })
-            if(res.ok)
-            {
-              bootstrap.Modal.getInstance(document.querySelector("#editStudentModal")).hide()
+        document
+          .querySelector("#editStudentForm")
+          .addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const id = document.querySelector("#editStudentId").value;
+            const updateProfile = await fetch(`${api}/updates/${id}`, {
+              headers: { authorization: `Bearer ${token}` },
+              method: "PATCH",
+              body: formData,
+            });
+            if (res.ok) {
+              bootstrap.Modal.getInstance(
+                document.querySelector("#editStudentModal"),
+              ).hide();
               AllStudents();
+            } else {
+              alert("Some error is occured");
             }
-            else
-            {
-              alert("Some error is occured")
-            }
-
-        })
+          });
       };
       // add students
       document
@@ -411,9 +425,9 @@
         .addEventListener("submit", async function (e) {
           e.preventDefault();
           const formData = new FormData(this);
-         
+
           const res = await fetch(`${api}/creates`, {
-              headers:{'authorization':`Bearer ${token}`},
+            headers: { authorization: `Bearer ${token}` },
             method: "POST",
             body: formData,
           });
@@ -423,21 +437,21 @@
             ).hide();
             AllStudents();
           } else {
-            alert(res)
+            alert(res);
             alert(res.message);
           }
         });
 
       AllStudents();
       // search functionality
-      document.querySelector('#searchInput').addEventListener('input',()=>{
-        const query=document.querySelector('#searchInput').value
-        AllStudents(query)
-      })
-   const Logout=()=>{
-    localStorage.removeItem('token')
-    window.location.href='index.html'
-   }
+      document.querySelector("#searchInput").addEventListener("input", () => {
+        const query = document.querySelector("#searchInput").value;
+        AllStudents(query);
+      });
+      const Logout = () => {
+        localStorage.removeItem("token");
+        window.location.href = "index.html";
+      };
     </script>
   </body>
 </html>
